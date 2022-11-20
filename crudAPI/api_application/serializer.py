@@ -7,7 +7,7 @@ def todo_serializer(todos:list[Todo]) -> list[dict]:
         todo_dict = {
             'id' : todo.id,
             'name': todo.name,
-            'desc': todo.description,
+            'description': todo.description,
             'created_at': str(todo.created_at),
             'completed': todo.completed
         }

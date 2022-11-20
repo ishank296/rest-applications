@@ -36,6 +36,20 @@ class TodoItem(Resource):
         else:
             return {"message": f"Error, No item with id: {id} found"},404
 
+    def put(self, id):
+        data = todo_parser.parse_args()
+        if (todo := Todo.query.get(int(id))):
+            todo.name = data.get('name')
+            todo.description = data.get('description')
+            todo.created_at = data.get('created_at')
+            todo.completed = data.get('completed')
+
+            db.session.commit()
+            resp = todo_serializer([todo])
+            return resp, 200
+        else:
+            return {"message": f"Error, No item with id: {id} found"},404
+
 
 
 api.add_resource(TodoList,"/todos")
