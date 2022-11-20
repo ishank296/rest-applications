@@ -27,5 +27,16 @@ class TodoList(Resource):
         data['created_at'] = str(data['created_at'])
         return data, 201
 
+class TodoItem(Resource):
+
+    def get(self, id):
+        if (todo := Todo.query.get(int(id))):
+            resp = todo_serializer([todo])
+            return resp, 200
+        else:
+            return {"message": f"Error, No item with id: {id} found"},404
+
+
 
 api.add_resource(TodoList,"/todos")
+api.add_resource(TodoItem,"/todo/<int:id>")
