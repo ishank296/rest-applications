@@ -1,5 +1,6 @@
 from sqlalchemy_relationships import app,db
-from .models import Account, User
+from .models import Account, User, Actor, Movie
+from datetime import datetime
 
 @app.cli.command('initdb')
 def reset_db():
@@ -20,6 +21,48 @@ def init_db():
     a3 = Account(account_name='BSRH098', account_balance=340)
     a4 = Account(account_name='PLNH786', account_balance=220)
 
+    m1 = Movie(title="Evil Dead", release_date=datetime.strptime("Oct 15 1981", "%b %d %Y"))
+    m2 = Movie(title="Darkman", release_date=datetime.strptime("Aug 24 1990", "%b %d %Y"))
+    m3 = Movie(title="The Quick and the Dead",
+               release_date=datetime.strptime("Feb 10 1995", "%b %d %Y"))
+    m4 = Movie(title="The Gift", release_date=datetime.strptime("Jan 19 2001", "%b %d %Y"))
+    m5 = Movie(title="Army of Darkness",release_date=datetime.strptime("Feb 19 1993", "%b %d %Y") )
+
+    bruce = Actor(name="Bruce Campbell")
+    ellen = Actor(name="Ellen Sandweiss")
+    hal = Actor(name="Hal Delrich")
+    keeanu = Actor(name="Keeanu Reeves")
+    betsy = Actor(name="Betsy Baker")
+    liam = Actor(name="Liam Neeson")
+    cate = Actor(name="Cate Blanchett")
+    sharon = Actor(name="Sharon Stone")
+
+    db.session.add(m1)
+    db.session.add(m2)
+    db.session.add(m3)
+    db.session.add(m4)
+    db.session.add(m5)
+
+    db.session.add(bruce)
+    db.session.add(sharon)
+    db.session.add(cate)
+    db.session.add(keeanu)
+    db.session.add(liam)
+    db.session.add(betsy)
+    db.session.add(hal)
+    db.session.add(ellen)
+
+    m1.actors.extend((bruce,ellen,betsy))
+    m2.actors.extend((bruce,liam))
+    m3.actors.extend((bruce,sharon))
+    m4.actors.extend((bruce,cate,keeanu))
+    m5.actors.append(bruce)
+
+    db.session.commit()
+
+
+
+
     db.session.add(u1)
     db.session.add(u2)
     db.session.add(u3)
@@ -34,6 +77,8 @@ def init_db():
     u3.accounts.append(a3)
     u3.accounts.append(a4)
     db.session.commit()
+
+
 
 
 @app.cli.command('check_data')
