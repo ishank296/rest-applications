@@ -3,6 +3,7 @@ import argparse
 from flask_authentication import db,app,api
 from flask_restful import Resource, marshal_with, fields, reqparse
 import uuid
+from werkzeug.security import generate_password_hash,check_password_hash
 
 todo_fields_without_user = {
     'id': fields.Integer,
@@ -49,6 +50,19 @@ class Users(Resource):
         if user:
             return user
         return {'message':f'User with id: {id} not found'}, 404
+
+    def post(self):
+        data = user_parser.parse_args()
+        print(data)
+        hashed_password = generate_password_hash(data['password'],method='sha256')
+        new_user = User(public_id=str(uuid.uuid4()),
+                        name=data['name'],
+                        password=hashed_password,
+                        admin=data.get('admin')
+                        )
+        db.session.add(new_user)
+        db.session.commit()
+        return new_user, 202
 
 
 class Todolist(Resource):
