@@ -99,7 +99,6 @@ api.add_resource(AccountList, '/accounts', '/accounts/<int:id>')
 @app.cli.command('reset_db')
 def reset():
     db.drop_all()
-    db.create_all()
 
 
 @app.cli.command('bootstrap')
