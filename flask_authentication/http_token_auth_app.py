@@ -38,12 +38,13 @@ class Todo(db.Model):
 user_parser = reqparse.RequestParser()
 user_parser.add_argument('name',required=True,type=str)
 user_parser.add_argument('password',required=True,type=str)
+user_parser.add_argument('admin',required=False,type=bool)
 
 
 class Users(Resource):
 
     @marshal_with(user_fields)
-    def get(self, id):
+    def get(self, id=None):
         if id is None:
             return User.query.all()
         user = User.query.get(id)
@@ -62,13 +63,14 @@ class Users(Resource):
                         )
         db.session.add(new_user)
         db.session.commit()
-        return new_user, 202
+        data['public_id'] = new_user.public_id
+        return data, 202
 
 
 class Todolist(Resource):
 
     @marshal_with(todo_fields_without_user)
-    def get(self, id):
+    def get(self, id=None):
         if id is None:
             return Todo.query.all()
         todo_item = Todo.query.get(id)
@@ -77,9 +79,13 @@ class Todolist(Resource):
         return {'message':'Resource not found'}, 404
 
 
-api.add_resource(Users,'/users','/users/<int:id>')
-api.add_resource(Todolist,'/todo','/todo/<int:id>')
+api.add_resource(Users, '/users', '/users/<int:id>')
+api.add_resource(Todolist, '/todo', '/todo/<int:id>')
 
+
+@app.cli.command("clean_db")
+def clean():
+    db.drop_all()
 
 @app.cli.command("init_db")
 def init():

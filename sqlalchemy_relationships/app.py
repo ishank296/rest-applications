@@ -2,10 +2,9 @@ from sqlalchemy_relationships import app,db
 from .models import Account, User, Actor, Movie
 from datetime import datetime
 
-@app.cli.command('initdb')
+@app.cli.command('clean_db')
 def reset_db():
     db.drop_all()
-    db.create_all()
 
 
 @app.cli.command('bootstrap')
@@ -59,9 +58,6 @@ def init_db():
     m5.actors.append(bruce)
 
     db.session.commit()
-
-
-
 
     db.session.add(u1)
     db.session.add(u2)
